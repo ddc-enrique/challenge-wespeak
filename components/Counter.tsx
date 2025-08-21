@@ -1,16 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-
-interface CounterState {
-  id: number,
-  value: number,
-  createdAt: Date,
-  updatedAt: Date
-}
+import { type Counter, CounterActionsValues, CounterActionType } from '@/types'
 
 export default function Counter() {
-  const [counter, setCounter] = useState<CounterState>({
+  const [counter, setCounter] = useState<Counter>({
     id: 0,
     value: 0,
     createdAt: new Date(),
@@ -44,7 +38,7 @@ export default function Counter() {
     }
   }
 
-  const updateCounter = async (action: 'increment' | 'decrement') => {
+  const updateCounter = async (action: CounterActionType) => {
     setUpdating(true)
     try {
       const response = await fetch('/api/counter', {
@@ -52,7 +46,7 @@ export default function Counter() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ action, id: counter.id }),
+        body: JSON.stringify({ action }),
       })
 
       if (!response.ok) {
@@ -100,7 +94,7 @@ export default function Counter() {
         {/* Action Buttons */}
         <div className="flex gap-4 justify-center">
           <button
-            onClick={() => updateCounter('decrement')}
+            onClick={() => updateCounter(CounterActionsValues.DECREMENT)}
             disabled={updating}
             className="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center min-w-[120px] cursor-pointer"
           >
@@ -115,7 +109,7 @@ export default function Counter() {
           </button>
           
           <button
-            onClick={() => updateCounter('increment')}
+            onClick={() => updateCounter(CounterActionsValues.INCREMENT)}
             disabled={updating}
             className="bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center min-w-[120px] cursor-pointer"
           >
@@ -169,7 +163,7 @@ export default function Counter() {
               </div>
               {showCreatedAt && counter?.createdAt && (
                 <div className="mt-2 text-xs text-gray-400">
-                  Creado: {new Date(counter.createdAt).toLocaleString()}
+                  Contador reiniciado en: {new Date(counter.createdAt).toLocaleString()}
                 </div>
               )}
             </div>
